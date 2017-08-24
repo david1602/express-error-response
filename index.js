@@ -1,3 +1,5 @@
+const debug = require('debug')('express-error-response');
+
 /**
  * Resolve status codes as strings
  * to numbers as the expressjs response
@@ -49,25 +51,44 @@ class RequestError extends Error {
 
 const catchMiddleware = function(config) {
     return function(err, req, res, next) {
-        if ('boolean' !== typeof config.json) config.json = true;
+        if ('boolean' !== typeof config.json) {
+            debug('config.json not set, defaulting to true');
+            config.json = true;
+        }
 
         const fn = config.json ? 'json' : 'send';
+
+        if (config.logger && 'function' !== typeof config.logger)
+            debug('config.logger is not a function and is silently ignored');
 
         if (config.logger && 'function' === typeof config.logger)
             config.logger(err);
 
         if (err instanceof RequestError) {
+            debug('found instance of RequestError');
             res.status(err.code);
         } else {
+            debug('the thrown Error was not a RequestError instance');
             if (config.catchAll) {
+                debug('config.catchAll is enabled, setting 500');
                 res.status(500);
             } else {
+                debug('config.catchAll is disabled, calling next middleware');
                 return next(err, req, res);
             }
         }
-        if (err.body) res[fn](body);
 
-        if (config.endRequest) res.end();
+        if (err.body) {
+            debug(
+                `found a body inside the error with typeof ${typeof body}, calling res.${fn}`
+            );
+            res[fn](body);
+        }
+
+        if (config.endRequest) {
+            debug('config.endRequest is enabled, ending request');
+            res.end();
+        }
     };
 };
 
