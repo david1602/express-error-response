@@ -24,23 +24,25 @@ const isNumber = num => !isNaN(num) && num !== -Infinity && num !== Infinity;
  * @return {RequestError}               Instanced RequestError
  */
 
-const RequestError = function(statusCode, body) {
-    const parsed = parseFloat(statusCode);
-    if (
-        !isNumber(parseFloat(statusCode)) &&
-        !isNumber(parseFloat(statusCodes[statusCode]))
-    )
-        this.code = 500;
-    else this.code = statusCodes[statusCode] || statusCode;
-    this.body = body;
-};
+class RequestError extends Error {
+    constructor(statusCode, body) {
+        super();
+        const parsed = parseFloat(statusCode);
+        if (
+            !isNumber(parseFloat(statusCode)) &&
+            !isNumber(parseFloat(statusCodes[statusCode]))
+        )
+            this.code = 500;
+        else this.code = statusCodes[statusCode] || statusCode;
+        this.body = body;
+    }
+}
 
 /**
  * Returns a middleware function for expressjs
  *
  * @param  {Function} config.logger     logging function, defaulted to console.log
  * @param  {Boolean} config.catchAll    Catch all errors or call next middleware?
- * @param  {Mixed} config.defaultBody   Default body overwrite
  * @param  {Boolean} config.endRequest  End the request?
  * @return {Function}                   Middleware function
  */
@@ -49,7 +51,6 @@ const catchMiddleware = function(config) {
     return function(err, req, res, next) {
         if (err instanceof RequestError) {
             res.status(err.code);
-            res.json(err.body || config.defaultBody || {});
         } else {
             if (config.catchAll) {
                 res.status(500);
@@ -57,6 +58,7 @@ const catchMiddleware = function(config) {
                 return next(err, req, res);
             }
         }
+        if (err.body) res.json(body);
 
         if (config.endRequest) res.end();
     };
@@ -67,3 +69,6 @@ module.exports = {
     catchMiddleware,
     RequestError
 };
+
+const a = new RequestError('badRequest', { a: 'b' });
+console.log(a.stack, typeof a, a instanceof RequestError, a instanceof Error);
