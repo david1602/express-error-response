@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/david1602/express-error-response/issues"
   },
-  "homepage": "https://github.com/david1602/express-error-response#readme"
+  "homepage": "https://github.com/david1602/express-error-response#readme",
+  "dependencies": {
+    "debug": "^3.0.0"
+  }
 }
