@@ -16,15 +16,14 @@ const statusCodes = {
 
 const isNumber = num => !isNaN(num) && num !== -Infinity && num !== Infinity;
 
-/**
- * RequestError Class
- *
- * @param  {String|Number} statusCode   Status code for the response
- * @param  {Object} body                optional JSON body that the response receives
- * @return {RequestError}               Instanced RequestError
- */
-
 class RequestError extends Error {
+    /**
+    * RequestError Class constructor
+    *
+    * @param  {String|Number} statusCode   Status code for the response
+    * @param  {Object} body                optional JSON body that the response receives
+    * @return {RequestError}               Instanced RequestError
+    */
     constructor(statusCode, body) {
         super();
         const parsed = parseFloat(statusCode);
@@ -69,6 +68,3 @@ module.exports = {
     catchMiddleware,
     RequestError
 };
-
-const a = new RequestError('badRequest', { a: 'b' });
-console.log(a.stack, typeof a, a instanceof RequestError, a instanceof Error);
