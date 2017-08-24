@@ -23,7 +23,7 @@ class RequestError extends Error {
     * RequestError Class constructor
     *
     * @param  {String|Number} statusCode   Status code for the response
-    * @param  {Object} body                optional JSON body that the response receives
+    * @param  {Object|String} body         optional body that the response receives
     * @return {RequestError}               Instanced RequestError
     */
     constructor(statusCode, body) {
