@@ -27,7 +27,7 @@ class RequestError extends Error {
     * @return {RequestError}               Instanced RequestError
     */
     constructor(statusCode, body) {
-        super();
+        super(statusCode);
         const parsed = parseFloat(statusCode);
         if (
             !isNumber(parseFloat(statusCode)) &&
