@@ -90,7 +90,7 @@ const catchMiddleware = function(config) {
             debug(
                 `found a body inside the error with typeof ${typeof body}, calling res.${fn}`
             );
-            res[fn](body);
+            res[fn](err.body);
         }
 
         if (config.endRequest) {
