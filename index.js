@@ -71,8 +71,6 @@ const catchMiddleware = function(config) {
     };
 };
 
-module.exports = {
-    statusCodes,
-    catchMiddleware,
-    RequestError
-};
+module.exports = catchMiddleware;
+module.exports.RequestError = RequestError;
+module.exports.statusCodes = statusCodes;
