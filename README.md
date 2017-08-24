@@ -28,3 +28,35 @@ The exposed function accepts one parameter called `config` which can contain the
 |`json`|`boolean`|If the error contains the `body` property, it will be added to the body of the response. `true` will respond in JSON, `false` will respond with a string. **Default: `true`**|
 |`catchAll`|`boolean`|Is this the only error middleware, should it catch all errors? Setting this to true will set the status to 500 for every error that is not a RequestError. **Default: `false`**|
 |`endRequest`|`boolean`|Should the request be ended after this middleware? `true` will end the request after setting the status code. **Default: `true`**|
+
+
+## Sample
+
+```javascript
+const express = require('express');
+const err = require('express-error-response');
+const {RequestError} = err;
+
+const config = {
+    logger: function(err){
+        console.log(err)
+    },
+    json: true,
+    catchAll: false,
+    endRequest: true
+};
+
+const middleware = err(config);
+
+const server = express();
+
+// Apply your routes and middlewares
+server.use('/', function(req, res) {
+    throw new RequestError('badRequest', {msg: 'Your request was invalid', info: 'some other info'});
+});
+
+// Register the error middleware
+server.use(middleware);
+
+server.listen(3000, '0.0.0.0');
+```
