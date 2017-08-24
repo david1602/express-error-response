@@ -55,6 +55,14 @@ const catchMiddleware = function(config) {
             debug('config.json not set, defaulting to true');
             config.json = true;
         }
+        if ('boolean' !== typeof config.catchAll) {
+            debug('config.catchAll is not set, defaulting to false');
+            config.catchAll = false;
+        }
+        if ('boolean' !== typeof config.endRequest) {
+            debug('config.endRequest is not set, defaulting to true');
+            config.endRequest = true;
+        }
 
         const fn = config.json ? 'json' : 'send';
 
