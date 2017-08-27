@@ -3,6 +3,16 @@
   "version": "1.0.0",
   "description": "Contains an expressjs middleware and a tool to throw errors with response codes",
   "main": "index.js",
+  "keywords": [
+    "expressjs",
+    "express",
+    "middleware",
+    "catch",
+    "error",
+    "throw",
+    "response",
+    "error-handling",
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
