@@ -1,32 +1,32 @@
 {
-  "name": "express-error-response",
-  "version": "1.0.0",
-  "description": "Contains an expressjs middleware and a tool to throw errors with response codes",
-  "main": "index.js",
-  "keywords": [
-    "expressjs",
-    "express",
-    "middleware",
-    "catch",
-    "error",
-    "throw",
-    "response",
-    "error-handling",
-  ],
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/david1602/express-error-response.git"
-  },
-  "author": "David Dernovoj",
-  "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://github.com/david1602/express-error-response/issues"
-  },
-  "homepage": "https://github.com/david1602/express-error-response#readme",
-  "dependencies": {
-    "debug": "^3.0.0"
-  }
+    "name": "express-error-response",
+    "version": "1.0.0",
+    "description": "Contains an expressjs middleware and a tool to throw errors with response codes",
+    "main": "index.js",
+    "keywords": [
+        "expressjs",
+        "express",
+        "middleware",
+        "catch",
+        "error",
+        "throw",
+        "response",
+        "error-handling"
+    ],
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/david1602/express-error-response.git"
+    },
+    "author": "David Dernovoj",
+    "license": "Apache-2.0",
+    "bugs": {
+        "url": "https://github.com/david1602/express-error-response/issues"
+    },
+    "homepage": "https://github.com/david1602/express-error-response#readme",
+    "dependencies": {
+        "debug": "^3.0.0"
+    }
 }
