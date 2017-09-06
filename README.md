@@ -3,7 +3,7 @@ Error utility and catching middleware for HTTP errors in expressjs
 
 ## Installation
 ```
-$ npm install express-erroresponse
+$ npm install express-error-response
 ```
 
 ## Usage
