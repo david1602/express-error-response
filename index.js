@@ -12,7 +12,7 @@ const statusCodes = {
     forbidden: 403,
     notFound: 404,
     methodNotAllowed: 405,
-    preeconditionFailed: 412,
+    preconditionFailed: 412,
     internalServerError: 500
 };
 
