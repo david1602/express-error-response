@@ -28,7 +28,7 @@ The exposed function accepts one parameter called `config` which can contain the
 |`json`|`boolean`|If the error contains the `body` property, it will be added to the body of the response. `true` will respond in JSON, `false` will respond with a string. **Default: `true`**|
 |`catchAll`|`boolean`|Is this the only error middleware, should it catch all errors? Setting this to true will set the status to 500 for every error that is not a RequestError. **Default: `false`**|
 |`endRequest`|`boolean`|Should the request be ended after this middleware? `true` will end the request after setting the status code. **Default: `true`**|
-|`defaultFail`|`Mixed`|Any value to respond wiht by default if the error is not a request error, or does not have a body property in general. **Default: `{}` if `config.json === true`, `''` if `json.config === false`**|
+|`defaultFail`|`Mixed`|Any value to respond wiht by default if the error is not a request error, or does not have a body property in general. **Default: `{}` if `config.json === true`, `''` if `config.json === false`**|
 
 
 ## Sample
