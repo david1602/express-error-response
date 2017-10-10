@@ -29,11 +29,7 @@ class RequestError extends Error {
     constructor(statusCode, body) {
         super(statusCode);
         const parsed = parseFloat(statusCode);
-        if (
-            !isNumber(parseFloat(statusCode)) &&
-            !isNumber(parseFloat(statusCodes[statusCode]))
-        )
-            this.code = 500;
+        if (!isNumber(parseFloat(statusCode)) && !isNumber(parseFloat(statusCodes[statusCode]))) this.code = 500;
         else this.code = statusCodes[statusCode] || statusCode;
         this.body = body;
     }
@@ -46,6 +42,8 @@ class RequestError extends Error {
  * @param  {Boolean}  config.json           respond with JSON or string, default true
  * @param  {Boolean}  config.catchAll       Catch all errors or call next middleware?
  * @param  {Boolean}  config.endRequest     End the request?
+ * @param  {Mixed}    config.defaultFail    Default value to respond with when the server throws a 500 and no
+ *                                          body is specified
  * @return {Function}                       Middleware function
  */
 
@@ -63,14 +61,17 @@ const catchMiddleware = function(config) {
             debug('config.endRequest is not set, defaulting to true');
             config.endRequest = true;
         }
+        if (!defaultFail) {
+            debug(`config.defaultFail is not set, defaulting it to ${config.json ? '{}' : '\'\''}`);
+            config.defaultFail = config.json ? {} : '';
+        }
 
         const fn = config.json ? 'json' : 'send';
 
         if (config.logger && 'function' !== typeof config.logger)
             debug('config.logger is not a function and is silently ignored');
 
-        if (config.logger && 'function' === typeof config.logger)
-            config.logger(err);
+        if (config.logger && 'function' === typeof config.logger) config.logger(err);
 
         if (err instanceof RequestError) {
             debug('found instance of RequestError');
@@ -87,11 +88,8 @@ const catchMiddleware = function(config) {
         }
 
         if (err.body) {
-            debug(
-                `found a body inside the error with typeof ${typeof body}, calling res.${fn}`
-            );
-            res[fn](err.body);
-        }
+            debug(`found a body inside the error with typeof ${typeof body}, calling res.${fn}`);
+        res[fn](err.body || config.defaultFail);
 
         if (config.endRequest) {
             debug('config.endRequest is enabled, ending request');
@@ -103,3 +101,10 @@ const catchMiddleware = function(config) {
 module.exports = catchMiddleware;
 module.exports.RequestError = RequestError;
 module.exports.statusCodes = statusCodes;
+
+// Add utilities to directly throw all the registered errors
+Object.keys(statusCodes).forEach(key => {
+    module.exports[key] = function(error = {}) {
+        throw new RequestError(key, error);
+    };
+});
