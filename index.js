@@ -61,7 +61,7 @@ const catchMiddleware = function(config) {
             debug('config.endRequest is not set, defaulting to true');
             config.endRequest = true;
         }
-        if (!defaultFail) {
+        if (!config.defaultFail) {
             debug(`config.defaultFail is not set, defaulting it to ${config.json ? '{}' : '\'\''}`);
             config.defaultFail = config.json ? {} : '';
         }
