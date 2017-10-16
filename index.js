@@ -87,7 +87,7 @@ const catchMiddleware = function(config) {
             }
         }
 
-        if (err.body) {
+        if (err.body)
             debug(`found a body inside the error with typeof ${typeof body}, calling res.${fn}`);
         res[fn](err.body || config.defaultFail);
 
