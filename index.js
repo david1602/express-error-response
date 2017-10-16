@@ -28,7 +28,6 @@ class RequestError extends Error {
     */
     constructor(statusCode, body) {
         super(statusCode);
-        const parsed = parseFloat(statusCode);
         if (!isNumber(parseFloat(statusCode)) && !isNumber(parseFloat(statusCodes[statusCode]))) this.code = 500;
         else this.code = statusCodes[statusCode] || statusCode;
         this.body = body;
