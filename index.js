@@ -75,9 +75,8 @@ const catchMiddleware = function (config) {
 
     const fn = config.json ? 'json' : 'send';
 
-    if (config.logger && 'function' !== typeof config.logger) {
+    if (config.logger && 'function' !== typeof config.logger)
         debug('config.logger is not a function and is silently ignored');
-    }
 
     return function (err, req, res, next) {
 
@@ -97,9 +96,8 @@ const catchMiddleware = function (config) {
             }
         }
 
-        if (err.body) {
+        if (err.body)
             debug(`found a body inside the error with typeof ${typeof body}, calling res.${fn}`);
-        }
 
         res[fn](err.body || config.defaultFail);
     };
