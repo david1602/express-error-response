@@ -13,7 +13,21 @@ const statusCodes = {
     notFound: 404,
     methodNotAllowed: 405,
     preconditionFailed: 412,
-    internalServerError: 500
+    teapot: 418,
+    internalServerError: 500,
+    notImplemented: 501
+};
+
+const messages = {
+    badRequest: "Bad request",
+    unauthorized: "The request is available only for authenticated users",
+    forbidden: "Required permission not found",
+    notFound: "Requested resource does not exist",
+    methodNotAllowed: "The requested method is not allowed on the resource",
+    preconditionFailed: "Request precondition failed",
+    teapot: "The server is a teapot",
+    internalServerError: "Internal server error",
+    notImplemented: "The functionality is not yet implemented"
 };
 
 const isNumber = num => !isNaN(num) && num !== -Infinity && num !== Infinity;
@@ -28,8 +42,8 @@ class RequestError extends Error {
     */
     constructor(statusCode, body) {
         super(statusCode);
-        if (!isNumber(parseFloat(statusCode)) && !isNumber(parseFloat(statusCodes[statusCode]))) this.code = 500;
-        else this.code = statusCodes[statusCode] || statusCode;
+        const isValidStatusCode = isNumber(parseFloat(statusCode)) || isNumber(parseFloat(statusCodes[statusCode]));
+        this.code = isValidStatusCode ? (statusCodes[statusCode] || statusCode) : 500;
         this.body = body;
     }
 }
@@ -39,36 +53,32 @@ class RequestError extends Error {
  *
  * @param  {Function} config.logger         logging function, defaulted to noop ( () => {} )
  * @param  {Boolean}  config.json           respond with JSON or string, default true
- * @param  {Boolean}  config.catchAll       Catch all errors or call next middleware?
- * @param  {Boolean}  config.endRequest     End the request?
+ * @param  {Boolean}  config.catchAll       Catch all errors (and end the request) or call next middleware?
  * @param  {Mixed}    config.defaultFail    Default value to respond with when the server throws a 500 and no
  *                                          body is specified
  * @return {Function}                       Middleware function
  */
+const catchMiddleware = function (config) {
 
-const catchMiddleware = function(config) {
-    return function(err, req, res, next) {
-        if ('boolean' !== typeof config.json) {
-            debug('config.json not set, defaulting to true');
-            config.json = true;
-        }
-        if ('boolean' !== typeof config.catchAll) {
-            debug('config.catchAll is not set, defaulting to false');
-            config.catchAll = false;
-        }
-        if ('boolean' !== typeof config.endRequest) {
-            debug('config.endRequest is not set, defaulting to true');
-            config.endRequest = true;
-        }
-        if (!config.defaultFail) {
-            debug(`config.defaultFail is not set, defaulting it to ${config.json ? '{}' : '\'\''}`);
-            config.defaultFail = config.json ? {} : '';
-        }
+    if ('boolean' !== typeof config.json) {
+        debug('config.json not set, defaulting to true');
+        config.json = true;
+    }
+    if ('boolean' !== typeof config.catchAll) {
+        debug('config.catchAll is not set, defaulting to false');
+        config.catchAll = false;
+    }
+    if (!config.defaultFail) {
+        debug(`config.defaultFail is not set, defaulting it to ${config.json ? '{}' : '\'\''}`);
+        config.defaultFail = config.json ? {} : '';
+    }
 
-        const fn = config.json ? 'json' : 'send';
+    const fn = config.json ? 'json' : 'send';
 
-        if (config.logger && 'function' !== typeof config.logger)
-            debug('config.logger is not a function and is silently ignored');
+    if (config.logger && 'function' !== typeof config.logger)
+        debug('config.logger is not a function and is silently ignored');
+
+    return function (err, req, res, next) {
 
         if (config.logger && 'function' === typeof config.logger) config.logger(err);
 
@@ -88,22 +98,20 @@ const catchMiddleware = function(config) {
 
         if (err.body)
             debug(`found a body inside the error with typeof ${typeof body}, calling res.${fn}`);
-        res[fn](err.body || config.defaultFail);
 
-        if (config.endRequest) {
-            debug('config.endRequest is enabled, ending request');
-            res.end();
-        }
+        res[fn](err.body || config.defaultFail);
     };
 };
+
 
 module.exports = catchMiddleware;
 module.exports.RequestError = RequestError;
 module.exports.statusCodes = statusCodes;
+module.exports.messages = messages;
 
 // Add utilities to directly throw all the registered errors
 Object.keys(statusCodes).forEach(key => {
-    module.exports[key] = function(error = {}) {
+    module.exports[key] = function (error = { message: messages[key] }) {
         throw new RequestError(key, error);
     };
 });
